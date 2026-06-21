@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adoção</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .subheader {
+            background: #f8f4ff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .subheader p {
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .campo {
+            margin-bottom: 28px;
+        }
+
+        .campo label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .campo label .numero {
+            color: #667eea;
+            font-weight: 700;
+            margin-right: 5px;
+        }
+
+        .obrigatorio {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            font-family: inherit;
+            background: #fafafa;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            max-height: 200px;
+        }
+
+        .opcoes {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .opcao {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .opcao:hover {
+            background: #e8e8e8;
+        }
+
+        .opcao input[type="radio"] {
+            accent-color: #667eea;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .opcao input[type="radio"]:checked+.texto {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .opcao.selecionado {
+            border-color: #667eea;
+            background: #f0edff;
+        }
+
+        .opcao .texto {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .resposta-livre {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .resposta-livre.ativo {
+            display: block;
+        }
+
+        .resposta-livre textarea {
+            background: #f8faff;
+            border-color: #d0d8f0;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #status {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .sucesso {
+            background: #d4edda;
+            color: #155724;
+            display: block !important;
+        }
+
+        .erro {
+            background: #f8d7da;
+            color: #721c24;
+            display: block !important;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .opcoes {
+                gap: 10px;
+            }
+
+            .opcao {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+
+            .campo label {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .opcoes {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .opcao {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🐾 Formulário de Adoção</h1>
+        <p>Responda com atenção para garantir o melhor lar para o animal</p>
+    </div>
+
+    <div class="subheader">
+        <p>📌 Antes de adotar, responda com honestidade. As respostas ajudam a encontrar o lar ideal.</p>
+    </div>
+
+    <form id="formAdocao">
+
+        <!-- DADOS PESSOAIS -->
+        <div class="campo">
+            <label>👤 Nome completo <span class="obrigatorio">*</span></label>
+            <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+        </div>
+
+        <div class="campo">
+            <label>📱 Telefone <span class="obrigatorio">*</span></label>
+            <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+        </div>
+
+        <div class="campo">
+            <label>📧 E-mail <span class="obrigatorio">*</span></label>
+            <input type="email" id="email" placeholder="seu@email.com" required>
+        </div>
+
+        <hr style="margin: 30px 0; border: 1px solid #f0f0f0;">
+
+        <!-- PERGUNTA 1 -->
+        <div class="campo">
+            <label><span class="numero">1.</span> Se o animal adoecer ou sofrer um acidente, você tem condições financeiras de arcar com consultas veterinárias, exames e medicamentos? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="1">
+                <label class="opcao">
+                    <input type="radio" name="pergunta1" value="Sim">
+                    <span class="texto">Sim</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta1" value="Não">
+                    <span class="texto">Não</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta1" value="Parcialmente">
+                    <span class="texto">Parcialmente</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta1">
+                <textarea rows="2" placeholder="Justifique sua resposta ou dê mais detalhes..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 2 -->
+        <div class="campo">
+            <label><span class="numero">2.</span> Você se compromete a manter as vacinas em dia, realizar a vermifugação periódica e castrar o animal assim que atingir a idade recomendada? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="2">
+                <label class="opcao">
+                    <input type="radio" name="pergunta2" value="Sim, totalmente">
+                    <span class="texto">Sim, totalmente</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta2" value="Sim, com ajuda">
+                    <span class="texto">Sim, com ajuda</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta2" value="Não tenho certeza">
+                    <span class="texto">Não tenho certeza</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta2">
+                <textarea rows="2" placeholder="Conte mais sobre sua disponibilidade..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 3 -->
+        <div class="campo">
+            <label><span class="numero">3.</span> Sua residência possui espaço físico adequado para que o animal possa se movimentar livremente e brincar sem se sentir confinado? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="3">
+                <label class="opcao">
+                    <input type="radio" name="pergunta3" value="Sim, muito espaço">
+                    <span class="texto">Sim, muito espaço</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta3" value="Espaço razoável">
+                    <span class="texto">Espaço razoável</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta3" value="Pouco espaço">
+                    <span class="texto">Pouco espaço</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta3">
+                <textarea rows="2" placeholder="Descreva o ambiente (casa, apartamento, quintal, etc)..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 4 -->
+        <div class="campo">
+            <label><span class="numero">4.</span> O animal terá liberdade para circular pela casa e ficará solto, sem uso de correntes ou confinamento em espaços restritos por longos períodos? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="4">
+                <label class="opcao">
+                    <input type="radio" name="pergunta4" value="Sim, totalmente livre">
+                    <span class="texto">Sim, totalmente livre</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta4" value="Sim, mas com limites">
+                    <span class="texto">Sim, mas com limites</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta4" value="Não, ficará preso">
+                    <span class="texto">Não, ficará preso</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta4">
+                <textarea rows="2" placeholder="Explique como será a rotina do animal..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 5 -->
+        <div class="campo">
+            <label><span class="numero">5.</span> Você dispõe de pelo menos 30 minutos diários para dedicar a passeios, brincadeiras e interação com o animal? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="5">
+                <label class="opcao">
+                    <input type="radio" name="pergunta5" value="Sim, mais de 30min">
+                    <span class="texto">Sim, mais de 30min</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta5" value="Sim, cerca de 30min">
+                    <span class="texto">Sim, cerca de 30min</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta5" value="Menos de 30min">
+                    <span class="texto">Menos de 30min</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta5">
+                <textarea rows="2" placeholder="Descreva sua rotina diária..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 6 -->
+        <div class="campo">
+            <label><span class="numero">6.</span> Em caso de viagem, mudança de cidade ou imprevistos, você já tem definido com quem o animal ficará e como será o cuidado nesse período? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="6">
+                <label class="opcao">
+                    <input type="radio" name="pergunta6" value="Sim, já tenho plano">
+                    <span class="texto">Sim, já tenho plano</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta6" value="Estou definindo">
+                    <span class="texto">Estou definindo</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta6" value="Não tenho plano">
+                    <span class="texto">Não tenho plano</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta6">
+                <textarea rows="2" placeholder="Quem poderia cuidar? Onde ficaria?..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 7 -->
+        <div class="campo">
+            <label><span class="numero">7.</span> Você tem ciência de que a expectativa de vida de um cão/gato pode ser de 10 a 15 anos ou mais, e se compromete a cuidar do animal durante toda essa jornada, independentemente de mudanças na sua rotina (filhos, casamento, emprego)? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="7">
+                <label class="opcao">
+                    <input type="radio" name="pergunta7" value="Sim, estou ciente e comprometido">
+                    <span class="texto">Sim, estou ciente e comprometido</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta7" value="Sim, mas com ressalvas">
+                    <span class="texto">Sim, mas com ressalvas</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta7" value="Não tinha pensado nisso">
+                    <span class="texto">Não tinha pensado nisso</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta7">
+                <textarea rows="2" placeholder="O que você pensa sobre esse compromisso de longo prazo?..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 8 -->
+        <div class="campo">
+            <label><span class="numero">8.</span> Todas as pessoas que moram com você (incluindo crianças, idosos e outros animais) estão de acordo com a chegada do novo membro? E alguém na casa tem alergia ou fobia a animais? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="8">
+                <label class="opcao">
+                    <input type="radio" name="pergunta8" value="Todos estão de acordo">
+                    <span class="texto">Todos estão de acordo</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta8" value="Alguém tem restrição">
+                    <span class="texto">Alguém tem restrição</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta8" value="Ainda não conversei">
+                    <span class="texto">Ainda não conversei</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta8">
+                <textarea rows="2" placeholder="Quem mora com você? Alguém tem alergia?..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 9 -->
+        <div class="campo">
+            <label><span class="numero">9.</span> Você já pesquisou sobre as necessidades específicas da raça/porte do animal (nível de energia, tendência a doenças, necessidade de tosa/escovação) e está preparado para atendê-las? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="9">
+                <label class="opcao">
+                    <input type="radio" name="pergunta9" value="Sim, já pesquisei">
+                    <span class="texto">Sim, já pesquisei</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta9" value="Pesquisei pouco">
+                    <span class="texto">Pesquisei pouco</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta9" value="Não pesquisei ainda">
+                    <span class="texto">Não pesquisei ainda</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta9">
+                <textarea rows="2" placeholder="O que você sabe sobre o animal que quer adotar?..."></textarea>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 10 -->
+        <div class="campo">
+            <label><span class="numero">10.</span> Caso o animal apresente comportamentos desafiadores como destruir móveis, latir/uivar em excesso ou fazer necessidades no lugar errado, você está disposto a buscar orientação profissional (adestrador/veterinário comportamental) ao invés de desistir da adoção? <span class="obrigatorio">*</span></label>
+            <div class="opcoes" data-pergunta="10">
+                <label class="opcao">
+                    <input type="radio" name="pergunta10" value="Sim, buscarei ajuda">
+                    <span class="texto">Sim, buscarei ajuda</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta10" value="Talvez, dependendo do caso">
+                    <span class="texto">Talvez, dependendo do caso</span>
+                </label>
+                <label class="opcao">
+                    <input type="radio" name="pergunta10" value="Não teria paciência">
+                    <span class="texto">Não teria paciência</span>
+                </label>
+            </div>
+            <div class="resposta-livre" id="resposta10">
+                <textarea rows="2" placeholder="Como você lidaria com situações difíceis?..."></textarea>
+            </div>
+        </div>
+
+        <hr style="margin: 30px 0; border: 1px solid #f0f0f0;">
+
+        <div class="campo">
+            <label>💬 Espaço para observações (opcional)</label>
+            <textarea id="observacoes" rows="3" placeholder="Algo mais que queira acrescentar?"></textarea>
+        </div>
+
+        <button type="submit">Enviar Respostas 🐾</button>
+        <div id="status"></div>
+    </form>
+</div>
+
+<script>
+    // MOSTRA CAMPO DE RESPOSTA LIVRE
+    document.querySelectorAll('.opcoes').forEach((grupo) => {
+        const radios = grupo.querySelectorAll('input[type="radio"]');
+        const perguntaId = grupo.dataset.pergunta;
+        const campoRespostaLivre = document.getElementById('resposta' + perguntaId);
+
+        radios.forEach((radio) => {
+            radio.addEventListener('change', function() {
+                grupo.querySelectorAll('.opcao').forEach(o => o.classList.remove('selecionado'));
+                this.closest('.opcao').classList.add('selecionado');
+
+                const valor = this.value;
+                const opcoesIdeais = [
+                    'Sim', 'Sim, totalmente', 'Sim, muito espaço', 
+                    'Sim, totalmente livre', 'Sim, mais de 30min', 
+                    'Sim, cerca de 30min', 'Sim, já tenho plano', 
+                    'Sim, estou ciente e comprometido', 'Todos estão de acordo', 
+                    'Sim, já pesquisei', 'Sim, buscarei ajuda'
+                ];
+
+                const isIdeal = opcoesIdeais.some(ideal => valor.includes(ideal));
+
+                if (!isIdeal) {
+                    campoRespostaLivre.classList.add('ativo');
+                } else {
+                    campoRespostaLivre.classList.remove('ativo');
+                }
+            });
+        });
+    });
+
+    // ENVIO DO FORMULÁRIO
+    document.getElementById('formAdocao').onsubmit = async (e) => {
+        e.preventDefault();
+
+        const dados = {
+            nome: document.getElementById('nome').value,
+            telefone: document.getElementById('telefone').value,
+            email: document.getElementById('email').value,
+            pergunta1: document.querySelector('input[name="pergunta1"]:checked')?.value || '',
+            resposta1: document.querySelector('#resposta1 textarea')?.value || '',
+            pergunta2: document.querySelector('input[name="pergunta2"]:checked')?.value || '',
+            resposta2: document.querySelector('#resposta2 textarea')?.value || '',
+            pergunta3: document.querySelector('input[name="pergunta3"]:checked')?.value || '',
+            resposta3: document.querySelector('#resposta3 textarea')?.value || '',
+            pergunta4: document.querySelector('input[name="pergunta4"]:checked')?.value || '',
+            resposta4: document.querySelector('#resposta4 textarea')?.value || '',
+            pergunta5: document.querySelector('input[name="pergunta5"]:checked')?.value || '',
+            resposta5: document.querySelector('#resposta5 textarea')?.value || '',
+            pergunta6: document.querySelector('input[name="pergunta6"]:checked')?.value || '',
+            resposta6: document.querySelector('#resposta6 textarea')?.value || '',
+            pergunta7: document.querySelector('input[name="pergunta7"]:checked')?.value || '',
+            resposta7: document.querySelector('#resposta7 textarea')?.value || '',
+            pergunta8: document.querySelector('input[name="pergunta8"]:checked')?.value || '',
+            resposta8: document.querySelector('#resposta8 textarea')?.value || '',
+            pergunta9: document.querySelector('input[name="pergunta9"]:checked')?.value || '',
+            resposta9: document.querySelector('#resposta9 textarea')?.value || '',
+            pergunta10: document.querySelector('input[name="pergunta10"]:checked')?.value || '',
+            resposta10: document.querySelector('#resposta10 textarea')?.value || '',
+            observacoes: document.getElementById('observacoes').value
+        };
+
+        // Verifica se todas as perguntas foram respondidas
+        const perguntas = ['pergunta1','pergunta2','pergunta3','pergunta4','pergunta5','pergunta6','pergunta7','pergunta8','pergunta9','pergunta10'];
+        let faltam = false;
+        perguntas.forEach(p => {
+            if (!dados[p]) faltam = true;
+        });
+
+        if (faltam) {
+            const status = document.getElementById('status');
+            status.textContent = '⚠️ Responda todas as perguntas antes de enviar.';
+            status.className = 'erro';
+            status.style.display = 'block';
+            return;
+        }
+
+        const status = document.getElementById('status');
+        status.className = '';
+        status.style.display = 'none';
+
+        try {
+            // ID DO FORMSPREE JÁ INSERIDO
+            const resposta = await fetch('https://formspree.io/f/mrewzoqy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (resposta.ok) {
+                status.textContent = '✅ Respostas enviadas com sucesso! Obrigado por se importar. 🐾';
+                status.className = 'sucesso';
+                document.getElementById('formAdocao').reset();
+                document.querySelectorAll('.resposta-livre').forEach(el => el.classList.remove('ativo'));
+                document.querySelectorAll('.opcao').forEach(el => el.classList.remove('selecionado'));
+            } else {
+                throw new Error('Erro no servidor');
+            }
+        } catch (erro) {
+            status.textContent = '❌ Erro ao enviar. Tente novamente.';
+            status.className = 'erro';
+        }
+
+        status.style.display = 'block';
+    };
+</script>
+
+</body>
+</html>
